@@ -1,57 +1,49 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { CheckCircle2, Landmark } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 
-type Period = "month" | "quarter" | "year";
-type Kpi = { label: string; value: string; note: string; gold?: boolean };
-const periods: Record<Period, string> = { month: "Bulan ini", quarter: "Kuartal ini", year: "Tahun ini" };
-const summary: Kpi[] = [
-  { label: "Total Karyawan", value: "248", note: "Lintas 6 direktorat" }, { label: "Total Pendapatan", value: "Rp 4,8 M", note: "Akumulasi periode berjalan", gold: true }, { label: "Total Santri", value: "1.426", note: "Tiga jenjang pendidikan" }, { label: "Total Jamaah", value: "3.870", note: "Terdata pada 12 Zawiyah" }, { label: "Direktorat Terpantau", value: "6", note: "Pendidikan & operasional" }, { label: "Total Lembaga", value: "9", note: "Ekonomi, pendidikan & filantropi" }, { label: "Lembaga Profit", value: "3/9", note: "33% lembaga untung", gold: true },
-];
-const employees = [["Sektor Pendidikan", "168", "162", "6", "sector"], ["Direktorat Dikdas", "74", "72", "2", "directorate"], ["Unit Akademik Dikdas", "48", "47", "1", "leaf"], ["Unit Kesiswaan Dikdas", "26", "25", "1", "leaf"], ["Direktorat Dikmen", "58", "56", "2", "directorate"], ["Unit Akademik Dikmen", "36", "35", "1", "leaf"], ["Unit Kesiswaan Dikmen", "22", "21", "1", "leaf"], ["Direktorat Dikti", "36", "34", "2", "directorate"], ["Unit Akademik Dikti", "36", "34", "2", "leaf"], ["Sektor Operasional", "80", "77", "3", "sector"], ["Direktorat Keuangan", "21", "21", "0", "directorate"], ["Unit Keuangan", "21", "21", "0", "leaf"], ["Direktorat Umum", "35", "33", "2", "directorate"], ["Unit Sarana Prasarana", "35", "33", "2", "leaf"], ["Direktorat Dakwah", "24", "23", "1", "directorate"], ["Unit Zawiyah", "24", "23", "1", "leaf"]] as const;
-const institutions = [["PT Barokah Mandiri", "Rp 2,16 M", "Rp 274 jt", "Rp 298 jt", "Rp 1,59 M", "73,5%", true], ["Koperasi Syariah Pesantren", "Rp 845 jt", "Rp 573 jt", "Rp 460 jt", "-Rp 187 jt", "-22,1%", false], ["BMT Al-Hikmah", "Rp 1,98 M", "Rp 1,42 M", "Rp 890 jt", "-Rp 330 jt", "-16,7%", false], ["Direktorat Pendidikan", "Rp 1,15 M", "Rp 1,19 M", "Rp 848 jt", "-Rp 884 jt", "-76,6%", false], ["Qini Mart", "Rp 980 jt", "Rp 620 jt", "Rp 240 jt", "Rp 120 jt", "12,2%", true], ["UKM Kopontren", "Rp 610 jt", "Rp 410 jt", "Rp 150 jt", "Rp 50 jt", "8,2%", true]] as const;
-const finance: Kpi[] = [{ label: "Total Pendapatan", value: "Rp 4,8 M", note: "Akumulasi periode berjalan" }, { label: "Total Pengeluaran", value: "Rp 3,6 M", note: "Belanja operasional dan program" }, { label: "Saldo", value: "Rp 1,2 M", note: "Posisi bersih setelah pengeluaran", gold: true }];
-const students: Kpi[] = [{ label: "Dikdas", value: "612", note: "42,9% dari total" }, { label: "Dikmen", value: "548", note: "38,4% dari total" }, { label: "Dikti", value: "266", note: "18,7% dari total", gold: true }];
-const zawiyah = [["Zawiyah Al-Hikmah", "Jakarta Timur", "864", "68"], ["Zawiyah An-Nur", "Bandung", "712", "54"], ["Zawiyah Al-Musthafa", "Semarang", "648", "49"], ["Zawiyah Ar-Rahmah", "Surabaya", "585", "43"], ["Zawiyah Al-Falah", "Yogyakarta", "514", "38"]];
-function Label({ children }: { children: React.ReactNode }) { return <div className="section-rule"><p>{children}</p></div>; }
-function Metric({ item }: { item: Kpi }) {
-  useEffect(() => {
-    if (item.label !== "Total Lembaga") return;
-    const carousel = document.querySelector<HTMLElement>(".institutions");
-    if (!carousel) return;
-    const cards = Array.from(carousel.querySelectorAll<HTMLElement>(".institution"));
-    carousel.style.display = "flex";
-    carousel.style.overflowX = "hidden";
-    carousel.style.gap = "8px";
-    const syncCardWidths = () => {
-      const visibleCards = window.innerWidth <= 610 ? 1 : window.innerWidth <= 900 ? 2 : 3;
-      cards.forEach((card) => { card.style.flex = `0 0 calc((100% - ${(visibleCards - 1) * 8}px) / ${visibleCards})`; });
-    };
-    const advance = () => {
-      const step = (cards[0]?.offsetWidth ?? 0) + 8;
-      const end = carousel.scrollWidth - carousel.clientWidth;
-      carousel.scrollTo({ left: carousel.scrollLeft + step >= end - 1 ? 0 : carousel.scrollLeft + step, behavior: "smooth" });
-    };
-    syncCardWidths();
-    const timer = window.setInterval(advance, 3200);
-    window.addEventListener("resize", syncCardWidths);
-    return () => { window.clearInterval(timer); window.removeEventListener("resize", syncCardWidths); };
-  }, [item.label]);
- return (
-    <article className={`kpi-card${item.gold ? " gold" : ""}`}>
-      <span>{item.label}</span>
-      <strong>{item.value}</strong>
-      <small>{item.note}</small>
-    </article>
-  ); 
+import {
+  DashboardHeader,
+  EmployeeSection,
+  FinanceSection,
+  InstitutionSection,
+  Metric,
+  StudentSection,
+  ZawiyahSection,
+} from "@/src/components/dashboard";
+import { periods, Period, summary } from "@/src/lib/dashboard-data";
+
+export default function Home() {
+  const [period, setPeriod] = useState<Period>("month");
+  const [toast, setToast] = useState(false);
+
+  return (
+    <div className="report-shell">
+      <DashboardHeader
+        period={period}
+        periods={periods}
+        onPeriodChange={setPeriod}
+        onReport={() => setToast(true)}
+      />
+      <main className="inner">
+        <section>
+          <div className="section-rule"><p>Ringkasan Umum</p></div>
+          <div className="kpis">
+            {summary.map((item) => <Metric item={item} key={item.label} />)}
+          </div>
+        </section>
+        <EmployeeSection />
+        <InstitutionSection />
+        <FinanceSection />
+        <StudentSection />
+        <ZawiyahSection />
+      </main>
+      <footer className="inner page-footer">
+        <span>Internal • Data ilustratif • Diperbarui 11 September 2026</span>
+        <span>Gunakan filter periode untuk menyesuaikan ringkasan.</span>
+      </footer>
+      {toast && <button className="toast" onClick={() => setToast(false)}><CheckCircle2 size={16} /> Permintaan laporan dicatat</button>}
+    </div>
+  );
 }
-function FinanceDetail() { const rows = [["Sektor Pendidikan", "Rp 2,85 M", "Rp 2,16 M", "Rp 690 jt", "sector"], ["Direktorat Dikdas", "Rp 1,45 M", "Rp 1,12 M", "Rp 330 jt", "directorate"], ["Operasional Dikdas", "Rp 1,45 M", "Rp 1,12 M", "Rp 330 jt", "leaf"], ["Direktorat Dikmen", "Rp 980 jt", "Rp 720 jt", "Rp 260 jt", "directorate"], ["Operasional Dikmen", "Rp 980 jt", "Rp 720 jt", "Rp 260 jt", "leaf"], ["Direktorat Dikti", "Rp 420 jt", "Rp 320 jt", "Rp 100 jt", "directorate"], ["Sektor Operasional", "Rp 1,95 M", "Rp 1,44 M", "Rp 510 jt", "sector"], ["Direktorat Keuangan", "Rp 470 jt", "Rp 310 jt", "Rp 160 jt", "directorate"], ["Direktorat Umum", "Rp 880 jt", "Rp 690 jt", "Rp 190 jt", "directorate"], ["Direktorat Dakwah", "Rp 600 jt", "Rp 440 jt", "Rp 160 jt", "directorate"]] as const; const trend = [["Apr", 50, 39], ["Mei", 59, 46], ["Jun", 66, 51], ["Jul", 75, 59], ["Agu", 88, 68], ["Sep", 100, 77]] as const; return <div className="compact-grid" style={{ gridColumn: "1 / -1" }}><div className="table-wrap scroll"><table><thead><tr><th>Struktur</th><th>Pendapatan</th><th>Pengeluaran</th><th>Saldo</th></tr></thead><tbody>{rows.map((row) => <tr className={row[4]} key={row[0]}><td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td></tr>)}</tbody></table></div><aside className="composition trend-card"><h3>Tren Pendapatan dan Pengeluaran</h3><div className="trend-legend"><span><i />Pendapatan</span><span><i className="gold-bar" />Pengeluaran</span></div><div className="trend-bars" style={{ display: "flex", height: 150, alignItems: "end", gap: 10, borderBottom: "1px solid #dce6df" }}>{trend.map(([label, income, expense]) => <div className="trend-column" key={label} style={{ flex: 1, textAlign: "center" }}><div className="trend-pair" style={{ display: "flex", height: 125, alignItems: "end", justifyContent: "center", gap: 3 }}><i style={{ display: "block", width: 12, height: `${income}%`, background: "#3e8164", borderRadius: "3px 3px 0 0" }} /><i style={{ display: "block", width: 12, height: `${expense}%`, background: "#c89d56", borderRadius: "3px 3px 0 0" }} /></div><span>{label}</span></div>)}</div></aside></div>; }
-function EmployeeTable() { return <div className="table-wrap scroll"><table><thead><tr><th>Struktur</th><th>Total</th><th>Aktif</th><th>Nonaktif</th></tr></thead><tbody>{employees.map((row) => <tr className={row[4]} key={row[0]}><td className={row[4] === "directorate" ? "indent-1" : row[4] === "leaf" ? "indent-2" : ""}>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td></tr>)}</tbody></table></div>; }
-function EmployeeChart() { const values = [["Dikdas", 74], ["Dikmen", 58], ["Dikti", 36], ["Umum", 35], ["Dakwah", 24], ["Keuangan", 21]] as const; return <aside className="chart-card"><div className="mini-stats"><div><span>Total Karyawan</span><b>248</b></div><div><span>Karyawan Aktif</span><b>239</b></div><div><span>Direktorat Terpantau</span><b>6</b></div></div><hr /><h3>Distribusi Karyawan per Direktorat</h3>{values.map(([label, value], index) => <div className="bar-row" key={label}><span>{label}</span><i><em className={index === 0 ? "gold-bar" : ""} style={{ width: `${value / 74 * 100}%` }} /></i><b>{value}</b></div>)}</aside>; }
-function Institution({ item }: { item: (typeof institutions)[number] }) { const [name, income, hpp, cost, profit, margin, positive] = item; return <article className="institution"><header><div><h3>{name}</h3><span>Ekonomi</span></div><b className={positive ? "profit" : "loss"}>{positive ? "Profit" : "Loss"}</b></header><div className="stats"><div><span>Pendapatan</span><strong>{income}</strong></div><div><span>HPP</span><strong>{hpp}</strong></div><div><span>Biaya</span><strong>{cost}</strong></div></div><footer><div><span>Laba Bersih</span><strong className={positive ? "positive" : "negative"}>{profit}</strong></div><strong className={positive ? "positive" : "negative"}>{margin}</strong></footer></article>; }
-function StudentDetail() { return <section><Label>Santri</Label><div className="three kpis">{students.map((item) => <Metric item={item} key={item.label} />)}</div><div className="compact-grid"><div className="table-wrap"><table><thead><tr><th>Jenjang</th><th>Jumlah</th><th>Putra</th><th>Putri</th><th>Persentase</th></tr></thead><tbody><tr><td>Dikdas</td><td>612</td><td>317</td><td>295</td><td>42,9%</td></tr><tr><td>Dikmen</td><td>548</td><td>278</td><td>270</td><td>38,4%</td></tr><tr><td>Dikti</td><td>266</td><td>141</td><td>125</td><td>18,7%</td></tr><tr className="sector"><td>Total</td><td>1.426</td><td>736</td><td>690</td><td>100%</td></tr></tbody></table></div><div className="composition"><h3>Komposisi Santri per Jenjang</h3><div className="composition-row"><span>Dikdas</span><i><em style={{ width: "100%" }} /></i><b>612</b></div><div className="composition-row"><span>Dikmen</span><i><em style={{ width: "90%" }} /></i><b>548</b></div><div className="composition-row"><span>Dikti</span><i><em className="gold-bar" style={{ width: "43%" }} /></i><b>266</b></div></div></div></section>; }
-function ZawiyahDetail() { return <section><Label>Zawiyah</Label><div className="three kpis"><Metric item={{ label: "Total Zawiyah", value: "12", note: "Zawiyah aktif terdata" }} /><Metric item={{ label: "Total Jamaah", value: "3.870", note: "Jamaah terdaftar" }} /><Metric item={{ label: "Total Suluk", value: "286 peserta", note: "Peserta program", gold: true }} /></div><div className="table-wrap zawiyah-table"><table><caption>Zawiyah dengan Jamaah Terbanyak</caption><thead><tr><th>Zawiyah</th><th>Wilayah</th><th>Jamaah</th><th>Peserta Suluk</th></tr></thead><tbody>{zawiyah.map((row, index) => <tr className={index === 0 ? "highlight" : ""} key={row[0]}>{row.map((cell) => <td key={cell}>{cell}</td>)}</tr>)}</tbody></table></div></section>; }
-export default function Home() { const [period, setPeriod] = useState<Period>("month"); const [toast, setToast] = useState(false); return <div className="report-shell"><header className="topbar"><div className="inner topbar-content"><div className="brand"><Image src="/Logo Tarekat Idrisiyyah - Ijo.png" alt="Tarekat Idrisiyyah" width={168} height={46} priority /><i><Landmark size={15} /></i></div><div className="header-title"><span>Ringkasan manajemen</span><h1>Executive Dashboard</h1></div><div className="meta"><select value={period} onChange={(event) => setPeriod(event.target.value as Period)} aria-label="Pilih periode">{Object.entries(periods).map(([key, value]) => <option key={key} value={key}>{value}</option>)}</select><button onClick={() => setToast(true)}>Laporan</button><div className="profile"
-></div></div></div></header><main className="inner"><section><Label>Ringkasan Umum</Label><div className="kpis">{summary.map((item) => <Metric item={item} key={item.label} />)}</div></section><section><Label>Sumber Daya Manusia</Label><h2>Kapasitas tenaga kerja</h2><p className="note">Ringkasan tenaga kerja lintas direktorat dan unit pendukung.</p><div className="layout"><EmployeeTable /><EmployeeChart /></div></section><section><Label>Kinerja Lembaga</Label><h2>Performa keuangan tiap lembaga</h2><p className="note">Pendapatan, HPP, biaya, dan laba bersih lintas unit usaha yayasan.</p><div className="institutions">{institutions.map((item) => <Institution item={item} key={item[0]} />)}</div></section><section><Label>Keuangan</Label><div className="three kpis">{finance.map((item) => <Metric item={item} key={item.label} />)}</div><FinanceDetail /></section><StudentDetail /><ZawiyahDetail /></main><footer className="inner page-footer"><span>Internal • Data ilustratif • Diperbarui 11 September 2026</span><span>Gunakan filter periode untuk menyesuaikan ringkasan.</span></footer>{toast && <button className="toast" onClick={() => setToast(false)}><CheckCircle2 size={16} /> Permintaan laporan dicatat</button>}</div>; }
