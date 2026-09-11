@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Executive Dashboard Pesantren",
-  description: "Ringkasan organisasi internal pesantren.",
+  title: "Executive Dashboard Tarekat Idrisiyyah",
+  description: "Ringkasan organisasi internal Tarekat Idrisiyyah.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
