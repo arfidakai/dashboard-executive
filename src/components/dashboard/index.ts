@@ -1,4 +1,5 @@
 export { DashboardHeader } from "./DashboardHeader";
+export { DashboardSlider } from "./DashboardSlider";
 export { EmployeeSection } from "./EmployeeSection";
 export { FinanceSection } from "./FinanceSection";
 export { InstitutionSection } from "./InstitutionSection";
