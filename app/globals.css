@@ -2,6 +2,7 @@
 @import "tailwindcss";
 .three.kpis > .compact-grid { order: 4; }
 .trend-legend { display: flex; gap: 12px; margin-bottom: 8px; color: var(--muted); font-size: 9px; }
+.data-demo-badge { margin-left: 8px; border: 1px solid #e8d3a9; border-radius: 999px; padding: 2px 6px; background: var(--goldpale); color: #866229; font-size: 9px; }
 .trend-legend span { display: flex; align-items: center; gap: 4px; }
 .trend-legend i { width: 8px; height: 8px; border-radius: 2px; background: #3e8164; }
 .trend-legend i.gold-bar { background: var(--gold); }

@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
-import { institutions } from "@/src/lib/dashboard-data";
+import type { Period } from "@/src/lib/dashboard-data";
+import type { KeuanganData } from "@/src/lib/api/keuangan";
+import { useDashboardData } from "@/src/lib/hooks/useDashboardData";
 import { SectionLabel } from "./Primitives";
+
+type Institution = KeuanganData["institutions"][number];
 
 // Data tuple shape: [name, income, hpp, cost, profit, margin, positive]
 // income/hpp/cost/profit datang sebagai string terformat, misal "Rp 2.160.000.000"
 const parseRupiah = (value: string) => Number(value.replace(/[^0-9-]/g, "")) || 0;
 
 function InstitutionBar({ item, active, onEnter, onLeave }: {
-  item: (typeof institutions)[number];
+  item: Institution;
   active: boolean;
   onEnter: () => void;
   onLeave: () => void;
@@ -56,7 +60,7 @@ function InstitutionBar({ item, active, onEnter, onLeave }: {
   );
 }
 
-function InstitutionCard({ item }: { item: (typeof institutions)[number] }) {
+function InstitutionCard({ item }: { item: Institution }) {
   const [name, income, hpp, cost, profit, margin, positive] = item;
 
   return (
@@ -78,7 +82,9 @@ function InstitutionCard({ item }: { item: (typeof institutions)[number] }) {
   );
 }
 
-export function InstitutionSection() {
+export function InstitutionSection({ period }: { period: Period }) {
+  const { data, isFallback } = useDashboardData("keuangan", period);
+  const institutions = data.institutions;
   const [active, setActive] = useState<number | null>(null);
 
   useEffect(() => {
@@ -127,7 +133,7 @@ export function InstitutionSection() {
 
   return (
     <section>
-      <SectionLabel>Kinerja Lembaga</SectionLabel>
+      <SectionLabel isFallback={isFallback}>Kinerja Lembaga</SectionLabel>
       <h2>Performa keuangan tiap lembaga</h2>
       <p className="note">Pendapatan, HPP, biaya, dan laba bersih lintas unit usaha yayasan.</p>
       <div className="institutions">
