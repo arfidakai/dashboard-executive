@@ -35,10 +35,10 @@ export default function Home() {
           onActiveIndexChange={setActiveSlide}
           slides={[
             { id: "ringkasan", label: "Ringkasan Umum", children: <section><div className="section-rule"><p>Ringkasan Umum</p></div><div className="kpis">{summary.map((item) => <Metric item={item} key={item.label} />)}</div></section> },
-            { id: "sdm", label: "SDM", children: <EmployeeSection /> },
-            { id: "keuangan", label: "Keuangan", children: <><FinanceSection /><InstitutionSection /></> },
-            { id: "santri", label: "Santri", children: <StudentSection /> },
-            { id: "zawiyah", label: "Zawiyah", children: <ZawiyahSection /> },
+            { id: "sdm", label: "SDM", children: <EmployeeSection period={period} /> },
+            { id: "keuangan", label: "Keuangan", children: <><FinanceSection period={period} /><InstitutionSection period={period} /></> },
+            { id: "santri", label: "Santri", children: <StudentSection period={period} /> },
+            { id: "zawiyah", label: "Zawiyah", children: <ZawiyahSection period={period} /> },
           ]}
         />
       </main>
