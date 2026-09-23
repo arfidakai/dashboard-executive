@@ -5,9 +5,6 @@ import { useDashboardData } from "@/src/lib/hooks/useDashboardData";
 import { SectionLabel } from "./Primitives";
 
 type Institution = KeuanganData["institutions"][number];
-
-// Data tuple shape: [name, income, hpp, cost, profit, margin, positive]
-// income/hpp/cost/profit datang sebagai string terformat, misal "Rp 2.160.000.000"
 const parseRupiah = (value: string) => Number(value.replace(/[^0-9-]/g, "")) || 0;
 
 function InstitutionBar({ item, active, onEnter, onLeave }: {
