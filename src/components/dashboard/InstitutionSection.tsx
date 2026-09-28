@@ -78,7 +78,7 @@ function InstitutionCard({ item }: { item: Institution }) {
     </article>
   );
 }
-
+//test
 export function InstitutionSection({ period }: { period: Period }) {
   const { data, isFallback } = useDashboardData("keuangan", period);
   const institutions = data.institutions;
