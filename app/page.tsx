@@ -14,11 +14,15 @@ import {
   ZawiyahSection,
 } from "@/src/components/dashboard";
 import { periods, Period, summary } from "@/src/lib/dashboard-data";
+import { useDashboardData } from "@/src/lib/hooks/useDashboardData";
 
 export default function Home() {
   const [period, setPeriod] = useState<Period>("month");
   const [activeSlide, setActiveSlide] = useState(0);
   const [toast, setToast] = useState(false);
+  const { data: santriData } = useDashboardData("santri", period);
+  const totalSantri = santriData.levels.reduce((total, level) => total + level.total, 0).toLocaleString("id-ID");
+  const summaryWithLiveSantri = summary.map((item) => item.label === "Total Santri" ? { ...item, value: totalSantri } : item);
 
   return (
     <div className="report-shell">
@@ -34,7 +38,7 @@ export default function Home() {
           activeIndex={activeSlide}
           onActiveIndexChange={setActiveSlide}
           slides={[
-            { id: "ringkasan", label: "Ringkasan Umum", children: <section><div className="section-rule"><p>Ringkasan Umum</p></div><div className="kpis">{summary.map((item) => <Metric item={item} key={item.label} />)}</div></section> },
+            { id: "ringkasan", label: "Ringkasan Umum", children: <section><div className="section-rule"><p>Ringkasan Umum</p></div><div className="kpis">{summaryWithLiveSantri.map((item) => <Metric item={item} key={item.label} />)}</div></section> },
             { id: "sdm", label: "SDM", children: <EmployeeSection period={period} /> },
             { id: "keuangan", label: "Keuangan", children: <><FinanceSection period={period} /><InstitutionSection period={period} /></> },
             { id: "santri", label: "Santri", children: <StudentSection period={period} /> },
