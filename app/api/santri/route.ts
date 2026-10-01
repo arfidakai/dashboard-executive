@@ -13,14 +13,15 @@ function isSantriResponse(value: unknown): value is SantriResponse {
   ));
 }
 
-export async function GET() {
+async function getSantri() {
   const apiKey = process.env.EDUTREN_API_KEY;
   if (!apiKey) return NextResponse.json({ message: "EDUTREN_API_KEY is not configured" }, { status: 503 });
 
   try {
-    const responses = await Promise.all(endpoints.map((endpoint) => fetch(`https://www.edutren.id/api_edutren/${endpoint}`, {
+    const responses = await Promise.all(endpoints.map((endpoint) => fetch(`https://www.edutren.id/api_edutren/${encodeURIComponent(endpoint)}`, {
       method: "POST",
       headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({}),
       cache: "no-store",
     })));
 
@@ -51,4 +52,12 @@ export async function GET() {
   } catch {
     return NextResponse.json({ message: "Unable to reach Edutren API" }, { status: 502 });
   }
+}
+
+export async function GET() {
+  return getSantri();
+}
+
+export async function POST() {
+  return getSantri();
 }

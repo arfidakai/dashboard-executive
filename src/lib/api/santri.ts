@@ -24,7 +24,12 @@ function isValidPayload(value: unknown): value is SantriData {
 
 export async function getSantriData(period: Period): Promise<{ data: SantriData; isFallback: boolean }> {
   try {
-    const response = await fetch(`/api/santri?period=${period}`, { cache: "no-store" });
+    const response = await fetch("/api/santri", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ period }),
+      cache: "no-store",
+    });
     if (!response.ok) return { data: fallback, isFallback: true };
     const payload: unknown = await response.json();
     return isValidPayload(payload) ? { data: payload, isFallback: false } : { data: fallback, isFallback: true };
