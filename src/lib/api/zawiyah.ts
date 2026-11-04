@@ -10,6 +10,9 @@ export type ZawiyahData = {
 type RekapJamaahRow = {
   zawiyah_id?: unknown;
   zawiyah_nama?: unknown;
+  noid_zawiyah?: unknown;
+  zawiyah?: unknown;
+  rzawiyah_keterangan?: unknown;
   jml_jamaah?: unknown;
   jml_jamaah_suluk?: unknown;
 };
@@ -66,11 +69,17 @@ export async function getZawiyahData(): Promise<{ data: ZawiyahData; isFallback:
     const rows = (payload as { responseData: RekapJamaahRow[] }).responseData
       .map((row) => {
         const jamaah = toNumber(row.jml_jamaah);
-        const suluk = toNumber(row.jml_jamaah_suluk);
-        if (typeof row.zawiyah_nama !== "string" || typeof row.zawiyah_id !== "string" || jamaah === null || suluk === null) {
+        const suluk = row.jml_jamaah_suluk === undefined ? 0 : toNumber(row.jml_jamaah_suluk);
+        const name = typeof row.zawiyah_nama === "string" ? row.zawiyah_nama : row.zawiyah;
+        const id = typeof row.zawiyah_id === "string"
+          ? row.zawiyah_id
+          : typeof row.rzawiyah_keterangan === "string"
+            ? row.rzawiyah_keterangan
+            : row.noid_zawiyah;
+        if (typeof name !== "string" || typeof id !== "string" || jamaah === null || suluk === null) {
           return null;
         }
-        return { name: row.zawiyah_nama, id: row.zawiyah_id, jamaah, suluk };
+        return { name, id, jamaah, suluk };
       })
       .filter((row): row is { name: string; id: string; jamaah: number; suluk: number } => row !== null);
     const data: ZawiyahData = {
