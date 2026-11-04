@@ -69,7 +69,7 @@ export async function getZawiyahData(): Promise<{ data: ZawiyahData; isFallback:
     const rows = (payload as { responseData: RekapJamaahRow[] }).responseData
       .map((row) => {
         const jamaah = toNumber(row.jml_jamaah);
-        const suluk = toNumber(row.jml_jamaah_suluk);
+        const suluk = row.jml_jamaah_suluk === undefined ? 0 : toNumber(row.jml_jamaah_suluk);
         const name = typeof row.zawiyah_nama === "string" ? row.zawiyah_nama : row.zawiyah;
         const id = typeof row.zawiyah_id === "string"
           ? row.zawiyah_id

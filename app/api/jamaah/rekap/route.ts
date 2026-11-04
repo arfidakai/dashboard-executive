@@ -10,7 +10,7 @@ type RekapJamaahRow = {
   zawiyah?: string;
   rzawiyah_keterangan?: string;
   jml_jamaah: number | string;
-  jml_jamaah_suluk: number | string;
+  jml_jamaah_suluk?: number | string;
 };
 
 type RekapJamaahResponse = {
@@ -26,7 +26,7 @@ function isRekapJamaahResponse(value: unknown): value is RekapJamaahResponse {
     (typeof row.zawiyah_id === "string" || typeof row.rzawiyah_keterangan === "string" || typeof row.noid_zawiyah === "string") &&
     (typeof row.zawiyah_nama === "string" || typeof row.zawiyah === "string") &&
     (typeof row.jml_jamaah === "number" || typeof row.jml_jamaah === "string") &&
-    (typeof row.jml_jamaah_suluk === "number" || typeof row.jml_jamaah_suluk === "string")
+    (row.jml_jamaah_suluk === undefined || typeof row.jml_jamaah_suluk === "number" || typeof row.jml_jamaah_suluk === "string")
   ));
 }
 
