@@ -1,7 +1,7 @@
 export interface OrgNode {
   id: string;
   nama: string;
-  spesifikasi: "Konsolidasi" | "Pembukuan" | "Cost Centre";
+  spesifikasi: "Konsolidasi" | "Pembukuan" | "Unit Pendukung";
   entitas: "Nirlaba" | "Pendidikan" | "Usaha Jasa" | "Retail/POS" | null;
   children?: OrgNode[];
 }

@@ -1,10 +1,12 @@
 import { zawiyah } from "@/src/lib/dashboard-data";
 
 export type ZawiyahData = {
-  zawiyah: Array<[string, string, string, string]>;
+  zawiyah: Array<[string, string, string, string, string, string]>;
   totalZawiyah: number;
   totalJamaah: number;
   totalSuluk: number;
+  totalGsubuh: number;
+  totalGmagrib: number;
 };
 
 type RekapJamaahRow = {
@@ -15,15 +17,20 @@ type RekapJamaahRow = {
   rzawiyah_keterangan?: unknown;
   jml_jamaah?: unknown;
   jml_jamaah_suluk?: unknown;
+  jml_muhasabah?: unknown;
+  jml_gsubuh?: unknown;
+  jml_gmagrib?: unknown;
 };
 
-const fallbackRows: Array<[string, string, string, string]> = zawiyah.map((row) => [row[0], row[1], row[2], row[3]]);
+const fallbackRows: Array<[string, string, string, string, string, string]> = zawiyah.map((row) => [row[0], row[1], row[2], row[3], "0", "0"]);
 
 export const fallback: ZawiyahData = {
   zawiyah: fallbackRows,
   totalZawiyah: 12,
   totalJamaah: 3870,
   totalSuluk: 286,
+  totalGsubuh: 0,
+  totalGmagrib: 0,
 };
 
 function isValidPayload(value: unknown): value is ZawiyahData {
@@ -33,7 +40,9 @@ function isValidPayload(value: unknown): value is ZawiyahData {
     typeof payload.totalZawiyah === "number" &&
     typeof payload.totalJamaah === "number" &&
     typeof payload.totalSuluk === "number" &&
-    payload.zawiyah.every((row) => Array.isArray(row) && row.length === 4 && row.every((cell) => typeof cell === "string"));
+    typeof payload.totalGsubuh === "number" &&
+    typeof payload.totalGmagrib === "number" &&
+    payload.zawiyah.every((row) => Array.isArray(row) && row.length === 6 && row.every((cell) => typeof cell === "string"));
 }
 
 function getJakartaDate() {
@@ -69,31 +78,39 @@ export async function getZawiyahData(): Promise<{ data: ZawiyahData; isFallback:
     const rows = (payload as { responseData: RekapJamaahRow[] }).responseData
       .map((row) => {
         const jamaah = toNumber(row.jml_jamaah);
-        const suluk = row.jml_jamaah_suluk === undefined ? 0 : toNumber(row.jml_jamaah_suluk);
+        const suluk = row.jml_muhasabah === undefined
+          ? row.jml_jamaah_suluk === undefined ? 0 : toNumber(row.jml_jamaah_suluk)
+          : toNumber(row.jml_muhasabah);
+        const gsubuh = row.jml_gsubuh === undefined ? 0 : toNumber(row.jml_gsubuh);
+        const gmagrib = row.jml_gmagrib === undefined ? 0 : toNumber(row.jml_gmagrib);
         const name = typeof row.zawiyah_nama === "string" ? row.zawiyah_nama : row.zawiyah;
         const id = typeof row.zawiyah_id === "string"
           ? row.zawiyah_id
           : typeof row.rzawiyah_keterangan === "string"
             ? row.rzawiyah_keterangan
             : row.noid_zawiyah;
-        if (typeof name !== "string" || typeof id !== "string" || jamaah === null || suluk === null) {
+        if (typeof name !== "string" || typeof id !== "string" || jamaah === null || suluk === null || gsubuh === null || gmagrib === null) {
           return null;
         }
-        return { name, id, jamaah, suluk };
+        return { name, id, jamaah, suluk, gsubuh, gmagrib };
       })
-      .filter((row): row is { name: string; id: string; jamaah: number; suluk: number } => row !== null);
+      .filter((row): row is { name: string; id: string; jamaah: number; suluk: number; gsubuh: number; gmagrib: number } => row !== null);
     const data: ZawiyahData = {
       zawiyah: rows
-        .map((row): [string, string, string, string] => [
+        .map((row): [string, string, string, string, string, string] => [
           row.name,
           row.id,
           row.jamaah.toLocaleString("id-ID"),
           row.suluk.toLocaleString("id-ID"),
+          row.gsubuh.toLocaleString("id-ID"),
+          row.gmagrib.toLocaleString("id-ID"),
         ])
         .sort((left, right) => Number(right[2].replace(/\./g, "")) - Number(left[2].replace(/\./g, ""))),
       totalZawiyah: rows.length,
       totalJamaah: rows.reduce((total, row) => total + row.jamaah, 0),
       totalSuluk: rows.reduce((total, row) => total + row.suluk, 0),
+      totalGsubuh: rows.reduce((total, row) => total + row.gsubuh, 0),
+      totalGmagrib: rows.reduce((total, row) => total + row.gmagrib, 0),
     };
 
     return isValidPayload(data) ? { data, isFallback: false } : { data: fallback, isFallback: true };

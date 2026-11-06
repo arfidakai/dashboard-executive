@@ -13,7 +13,7 @@ interface OrgTreeDrilldownProps {
 const specificationStyles: Record<OrgNode["spesifikasi"], string> = {
   Konsolidasi: "border-blue-200 bg-blue-50 text-blue-700",
   Pembukuan: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  "Cost Centre": "border-slate-200 bg-slate-100 text-slate-600",
+  "Unit Pendukung": "border-slate-200 bg-slate-100 text-slate-600",
 };
 
 export function OrgTreeDrilldown({ data }: OrgTreeDrilldownProps) {
