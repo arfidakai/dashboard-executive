@@ -39,17 +39,17 @@ export default function Home() {
           onActiveIndexChange={setActiveSlide}
           slides={[
             { id: "ringkasan", label: "Ringkasan Umum", children: <section><div className="section-rule"><p>Ringkasan Umum</p></div><div className="kpis">{summaryWithLiveSantri.map((item) => <Metric item={item} key={item.label} />)}</div></section> },
-            { id: "sdm", label: "SDM", children: <EmployeeSection period={period} /> },
+            { id: "sdm", label: "Khudama", children: <EmployeeSection period={period} /> },
             { id: "keuangan", label: "Keuangan", children: <><FinanceSection period={period} /><InstitutionSection period={period} /></> },
             { id: "santri", label: "Santri", children: <StudentSection period={period} /> },
             { id: "zawiyah", label: "Zawiyah", children: <ZawiyahSection period={period} /> },
           ]}
         />
       </main>
-      <footer className="inner page-footer">
-        <span>Internal • Data ilustratif • Diperbarui 11 September 2026</span>
-        <span>Gunakan filter periode untuk menyesuaikan ringkasan.</span>
-      </footer>
+     <footer className="inner page-footer">
+  <span>Internal • Data Terintegrasi • Diperbarui November 2026</span>
+  {/* <span>Ringkasan data operasional zawiyah & amalan suluk</span> */}
+</footer>
       {toast && <button className="toast" onClick={() => setToast(false)}><CheckCircle2 size={16} /> Permintaan laporan dicatat</button>}
     </div>
   );

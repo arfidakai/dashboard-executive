@@ -11,6 +11,9 @@ type RekapJamaahRow = {
   rzawiyah_keterangan?: string;
   jml_jamaah: number | string;
   jml_jamaah_suluk?: number | string;
+  jml_muhasabah?: number | string;
+  jml_gsubuh?: number | string;
+  jml_gmagrib?: number | string;
 };
 
 type RekapJamaahResponse = {
@@ -26,7 +29,10 @@ function isRekapJamaahResponse(value: unknown): value is RekapJamaahResponse {
     (typeof row.zawiyah_id === "string" || typeof row.rzawiyah_keterangan === "string" || typeof row.noid_zawiyah === "string") &&
     (typeof row.zawiyah_nama === "string" || typeof row.zawiyah === "string") &&
     (typeof row.jml_jamaah === "number" || typeof row.jml_jamaah === "string") &&
-    (row.jml_jamaah_suluk === undefined || typeof row.jml_jamaah_suluk === "number" || typeof row.jml_jamaah_suluk === "string")
+    (row.jml_jamaah_suluk === undefined || typeof row.jml_jamaah_suluk === "number" || typeof row.jml_jamaah_suluk === "string") &&
+    (row.jml_muhasabah === undefined || typeof row.jml_muhasabah === "number" || typeof row.jml_muhasabah === "string") &&
+    (row.jml_gsubuh === undefined || typeof row.jml_gsubuh === "number" || typeof row.jml_gsubuh === "string") &&
+    (row.jml_gmagrib === undefined || typeof row.jml_gmagrib === "number" || typeof row.jml_gmagrib === "string")
   ));
 }
 

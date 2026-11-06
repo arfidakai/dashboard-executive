@@ -3,9 +3,9 @@ export type Kpi = { label: string; value: string; note: string; gold?: boolean }
 
 export const periods: Record<Period, string> = { month: "Bulan ini", quarter: "Kuartal ini", year: "Tahun ini" };
 export const summary: Kpi[] = [
-  { label: "Total Karyawan", value: "248", note: "Lintas 6 direktorat" },
+  { label: "Total Khudama", value: "248", note: "Lintas 6 direktorat" },
   { label: "Total Pendapatan", value: "Rp 4.800.000.000", note: "Akumulasi periode berjalan", gold: true },
-  { label: "Total Santri", value: "1.426", note: "Tiga jenjang pendidikan" },
+  { label: "Total Santri", value: "1.426", note: "Pendidikan dasar, menengah, dan tinggi" },
   { label: "Total Jamaah", value: "3.870", note: "Terdata pada 12 Zawiyah" },
   { label: "Direktorat Terpantau", value: "6", note: "Pendidikan & operasional" },
   { label: "Total Lembaga", value: "9", note: "Ekonomi, pendidikan & filantropi" },
@@ -19,4 +19,3 @@ export const students: Kpi[] = [{ label: "Dikdas", value: "612", note: "42,9% da
 export const zawiyah = [["Zawiyah Al-Hikmah", "Jakarta Timur", "864", "68"], ["Zawiyah An-Nur", "Bandung", "712", "54"], ["Zawiyah Al-Musthafa", "Semarang", "648", "49"], ["Zawiyah Ar-Rahmah", "Surabaya", "585", "43"], ["Zawiyah Al-Falah", "Yogyakarta", "514", "38"]];
 export const financeRows = [["Sektor Pendidikan", "Rp 2.850.000.000", "Rp 2.160.000.000", "Rp 690.000.000", "sector"], ["Direktorat Dikdas", "Rp 1.450.000.000", "Rp 1.120.000.000", "Rp 330.000.000", "directorate"], ["Operasional Dikdas", "Rp 1.450.000.000", "Rp 1.120.000.000", "Rp 330.000.000", "leaf"], ["Direktorat Dikmen", "Rp 980.000.000", "Rp 720.000.000", "Rp 260.000.000", "directorate"], ["Operasional Dikmen", "Rp 980.000.000", "Rp 720.000.000", "Rp 260.000.000", "leaf"], ["Direktorat Dikti", "Rp 420.000.000", "Rp 320.000.000", "Rp 100.000.000", "directorate"], ["Sektor Operasional", "Rp 1.950.000.000", "Rp 1.440.000.000", "Rp 510.000.000", "sector"], ["Direktorat Keuangan", "Rp 470.000.000", "Rp 310.000.000", "Rp 160.000.000", "directorate"], ["Direktorat Umum", "Rp 880.000.000", "Rp 690.000.000", "Rp 190.000.000", "directorate"], ["Direktorat Dakwah", "Rp 600.000.000", "Rp 440.000.000", "Rp 160.000.000", "directorate"]] as const;
 export const financeTrend = [["Apr", 50, 39], ["Mei", 59, 46], ["Jun", 66, 51], ["Jul", 75, 59], ["Agu", 88, 68], ["Sep", 100, 77]] as const;
-
