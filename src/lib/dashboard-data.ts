@@ -1,7 +1,7 @@
 export type Period = "month" | "quarter" | "year";
 export type Kpi = { label: string; value: string; note: string; gold?: boolean };
 
-export const periods: Record<Period, string> = { month: "Bulan ini", quarter: "Kuartal ini", year: "Tahun ini" };
+export const periods: Record<Period, string> = { month: "Oktober 2026", quarter: "Kuartal ini", year: "Tahun ini" };
 export const summary: Kpi[] = [
   { label: "Total Khudama", value: "248", note: "Lintas 6 direktorat" },
   { label: "Total Pendapatan", value: "Rp 4.800.000.000", note: "Akumulasi periode berjalan", gold: true },
