@@ -1,7 +1,6 @@
-import { createHmac } from "node:crypto";
 import { NextResponse } from "next/server";
-
-const endpoint = "https://api.idrisiyyah.or.id/jamaah/getRekapJamaah";
+import { isAuthenticated } from "@/src/lib/auth";
+import { getDateTrx, postSignedDateRequest } from "@/src/lib/api/signed-date-request";
 
 type RekapJamaahRow = {
   zawiyah_id?: string;
@@ -36,31 +35,17 @@ function isRekapJamaahResponse(value: unknown): value is RekapJamaahResponse {
   ));
 }
 
-function isDate(value: unknown): value is string {
-  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
-}
-
 export async function POST(request: Request) {
+  if (!(await isAuthenticated())) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  const endpoint = process.env.API_ZAWIYAH_URL || "https://api.idrisiyyah.or.id/jamaah/getRekapJamaah";
+
   const key = process.env.KEY_SIGNATURE;
   if (!key) return NextResponse.json({ message: "KEY_SIGNATURE is not configured" }, { status: 503 });
 
   try {
     const body: unknown = await request.json();
-    const dateTrx = body && typeof body === "object" && isDate((body as { date_trx?: unknown }).date_trx)
-      ? (body as { date_trx: string }).date_trx
-      : new Date().toISOString().slice(0, 10);
-    const requestBody = JSON.stringify({ date_trx: dateTrx });
-    const signature = createHmac("sha512", key).update(requestBody).digest("hex");
-
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${signature}`,
-      },
-      body: requestBody,
-      cache: "no-store",
-    });
+    const response = await postSignedDateRequest(endpoint, key, getDateTrx(body));
 
     if (!response.ok) return NextResponse.json({ message: "Rekap jamaah API request failed" }, { status: 502 });
 

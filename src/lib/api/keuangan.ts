@@ -24,7 +24,7 @@ export const october2026: KeuanganData = {
   ],
 };
 
-function isValidPayload(value: unknown): value is KeuanganData {
+export function isValidPayload(value: unknown): value is KeuanganData {
   if (!value || typeof value !== "object") return false;
   const payload = value as Partial<KeuanganData>;
   const validKpis = Array.isArray(payload.finance) && payload.finance.every((item) => item && typeof item === "object" && typeof item.label === "string" && typeof item.value === "string" && typeof item.note === "string" && (item.gold === undefined || typeof item.gold === "boolean"));
@@ -34,18 +34,16 @@ function isValidPayload(value: unknown): value is KeuanganData {
 }
 
 export async function getKeuanganData(period: Period): Promise<{ data: KeuanganData; isFallback: boolean }> {
-  const endpoint = process.env.NEXT_PUBLIC_API_KEUANGAN_URL;
-  if (!endpoint) {
-    return period === "month"
-      ? { data: october2026, isFallback: false }
-      : { data: fallback, isFallback: true };
-  }
-
   try {
-    const response = await fetch(`${endpoint}?period=${period}`, { cache: "no-store" });
+    const response = await fetch(`/api/keuangan?period=${period}`, { cache: "no-store" });
     if (!response.ok) return { data: fallback, isFallback: true };
     const payload: unknown = await response.json();
-    return isValidPayload(payload) ? { data: payload, isFallback: false } : { data: fallback, isFallback: true };
+    if (!payload || typeof payload !== "object") return { data: fallback, isFallback: true };
+
+    const result = payload as { data?: unknown; isFallback?: unknown };
+    return isValidPayload(result.data) && typeof result.isFallback === "boolean"
+      ? { data: result.data, isFallback: result.isFallback }
+      : { data: fallback, isFallback: true };
   } catch {
     return { data: fallback, isFallback: true };
   }
