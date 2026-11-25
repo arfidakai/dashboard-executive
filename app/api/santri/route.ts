@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAuthenticated } from "@/src/lib/auth";
 
 type SantriRow = { kategori: string; total_siswa: number };
 type SantriResponse = { response_code?: string; response_data?: SantriRow[] };
@@ -55,9 +56,11 @@ async function getSantri() {
 }
 
 export async function GET() {
+  if (!(await isAuthenticated())) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   return getSantri();
 }
 
 export async function POST() {
+  if (!(await isAuthenticated())) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   return getSantri();
 }

@@ -39,6 +39,23 @@
 .institutions .institution { min-width: 0; }
 .institutions .institution { flex-shrink: 0; }
 @media (max-width: 610px) { .institutions { overflow-x: hidden; } }
+.login-page { display: grid; min-height: 100vh; place-items: center; padding: 24px; background: var(--pale); }
+.login-card { width: min(100%, 420px); border: 1px solid var(--line); border-radius: 12px; padding: 32px; background: #fff; box-shadow: 0 16px 48px #174c3a12; }
+.login-logo { width: 168px; height: 46px; object-fit: contain; object-position: left center; }
+.login-eyebrow { margin: 28px 0 5px; color: var(--gold); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.login-card h1 { margin: 0; color: var(--forest); font: 600 26px Fraunces,serif; }
+.login-description { margin: 8px 0 24px; color: var(--muted); font-size: 13px; }
+.login-form { display: grid; gap: 8px; }
+.login-form label { margin-top: 7px; color: var(--forest); font-size: 12px; font-weight: 700; }
+.login-form input { width: 100%; border: 1px solid #cbd9d0; border-radius: 7px; padding: 11px 12px; color: var(--ink); background: #fff; font: 14px "DM Sans",sans-serif; }
+.login-form input:focus { outline: 2px solid #3e816455; border-color: var(--forest); }
+.login-form button { margin-top: 12px; border: 0; border-radius: 7px; padding: 12px; background: var(--forest); color: #fff; cursor: pointer; font: 700 13px "DM Sans",sans-serif; }
+.login-form button:disabled { cursor: wait; opacity: .7; }
+.login-error,.auth-toast { color: #b42318; font-size: 12px; }
+.login-error { margin: 6px 0 0; }
+.auth-toast { position: fixed; right: 20px; bottom: 20px; z-index: 20; border-radius: 8px; padding: 11px 14px; background: #fff; box-shadow: 0 4px 20px #0002; }
+.meta .logout-button { border: 1px solid var(--line); background: #fff; color: var(--forest); }
+@media (max-width: 610px) { .login-card { padding: 24px; }.meta .logout-button { display: inline-block; } }
 .dashboard-slider { overflow: hidden; }
 .dashboard-slider-track { display: flex; transition: transform .45s ease; }
 .dashboard-slide { flex: 0 0 100%; min-width: 0; }

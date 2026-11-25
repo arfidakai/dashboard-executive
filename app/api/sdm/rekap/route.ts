@@ -1,7 +1,6 @@
-import { createHmac } from "node:crypto";
 import { NextResponse } from "next/server";
-
-const endpoint = "https://api.idrisiyyah.or.id/sdm/getSdm";
+import { isAuthenticated } from "@/src/lib/auth";
+import { getDateTrx, postSignedDateRequest } from "@/src/lib/api/signed-date-request";
 
 type SdmRow = {
   id_kompartemen: string;
@@ -29,31 +28,17 @@ function isSdmResponse(value: unknown): value is SdmResponse {
   ));
 }
 
-function isDate(value: unknown): value is string {
-  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
-}
-
 export async function POST(request: Request) {
+  if (!(await isAuthenticated())) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  const endpoint = process.env.API_SDM_URL || "https://api.idrisiyyah.or.id/sdm/getSdm";
+
   const keySignature = process.env.KEY_SIGNATURE;
   if (!keySignature) return NextResponse.json({ message: "KEY_SIGNATURE is not configured" }, { status: 503 });
 
   try {
     const body: unknown = await request.json();
-    const dateTrx = body && typeof body === "object" && isDate((body as { date_trx?: unknown }).date_trx)
-      ? (body as { date_trx: string }).date_trx
-      : new Date().toISOString().slice(0, 10);
-    const requestBody = JSON.stringify({ date_trx: dateTrx });
-    const signature = createHmac("sha512", keySignature).update(requestBody).digest("hex");
-
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${signature}`,
-      },
-      body: requestBody,
-      cache: "no-store",
-    });
+    const response = await postSignedDateRequest(endpoint, keySignature, getDateTrx(body));
 
     if (!response.ok) return NextResponse.json({ message: "Rekap SDM API request failed" }, { status: 502 });
 
